@@ -1,0 +1,12 @@
+{
+  "_comment": "Sample --vars-file payload with typed JSON values.",
+  "ROOT": "/Game/Environment",
+  "OUTPUT_PATH": "C:/reports/environment review.json",
+  "LIMIT": 25,
+  "DRY_RUN": true,
+  "TAGS": ["environment", "review"],
+  "OPTIONS": {
+    "include_dependencies": true,
+    "minimum_size": 0
+  }
+}

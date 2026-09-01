@@ -1,0 +1,59 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version without the v prefix"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@4360b52568e2003a75bf9bc1d59f33a8e3fc893c
+        with:
+          toolchain: 1.85.0
+          components: clippy, rustfmt
+      - uses: astral-sh/setup-uv@d0d8abe699bfb85fec6de9f7adb5ae17292296ff # v6
+      - run: uv sync --locked --group dev
+      - run: cargo fmt --check --manifest-path native/ue-remote-client/Cargo.toml
+      - run: cargo clippy --locked --all-targets --manifest-path native/ue-remote-client/Cargo.toml -- -D warnings
+      - run: cargo test --locked --manifest-path native/ue-remote-client/Cargo.toml
+      - run: uv run --locked python -m pytest -q
+      - run: cargo install cargo-about --version 0.9.2 --locked --features cli
+      - run: cargo about generate scripts/licenses.hbs --locked --fail --manifest-path native/ue-remote-client/Cargo.toml --output-file THIRD_PARTY_LICENSES.html
+      - run: git diff --exit-code -- THIRD_PARTY_LICENSES.html
+      - shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq "workflow_dispatch") {
+            $releaseVersion = "${{ inputs.version }}"
+          } else {
+            $releaseVersion = "${{ github.ref_name }}" -replace '^v', ''
+          }
+          "RELEASE_VERSION=$releaseVersion" | Out-File -FilePath $env:GITHUB_ENV -Append
+      - shell: pwsh
+        run: powershell -ExecutionPolicy Bypass -File scripts/package_release.ps1 -Version $env:RELEASE_VERSION
+      - if: github.event_name == 'push'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" `
+            "dist/ue-editor-remote-exec-$env:RELEASE_VERSION-windows.zip" `
+            "dist/ue-editor-remote-exec-$env:RELEASE_VERSION-windows.zip.sha256" `
+            --verify-tag --generate-notes
+      - if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+        with:
+          name: ue-editor-remote-exec-${{ env.RELEASE_VERSION }}-windows
+          path: dist/*

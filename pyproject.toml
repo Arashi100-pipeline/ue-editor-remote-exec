@@ -1,0 +1,16 @@
+[project]
+name = "ue-editor-remote-exec"
+version = "0.1.0"
+description = "Lifecycle coordinator for one exact Unreal Editor Remote Execution session"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "psutil>=5.9,<8",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<10",
+]
+
+[tool.uv]
+package = false

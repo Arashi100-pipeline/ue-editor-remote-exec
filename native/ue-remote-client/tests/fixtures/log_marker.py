@@ -1,0 +1,1 @@
+print("UE_REMOTE_RUST_SMOKE_OK")
