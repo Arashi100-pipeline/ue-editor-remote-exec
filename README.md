@@ -5,6 +5,38 @@ coordinator finds or launches the Editor, while a Rust client performs
 Remote Execution discovery, verifies the in-editor PID and project directory, and
 executes isolated Python scripts.
 
+## Why use this alongside Unreal MCP?
+
+[Unreal MCP](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor)
+is an Experimental UE 5.8 feature that embeds a local HTTP MCP server in the
+Editor. It exposes typed, discoverable Tools supplied by the Toolset Registry. That
+is a strong fit for UE 5.8 projects that want a standard MCP integration and a broad
+catalog of reusable editor operations.
+
+This project solves a different problem: deterministic automation of one exact
+Editor instance, including existing projects on engine versions before UE 5.8. Its
+unit of execution is an isolated Unreal Python script rather than a pre-registered
+Tool, so project-specific and one-off workflows can use the available `unreal`
+Python API immediately.
+
+| Area | UE Editor Remote Exec | Unreal MCP in UE 5.8 |
+|---|---|---|
+| Engine coverage | Tested with UE 5.3 and 5.7; the same workflow can be integration-tested for other UE4/UE5 releases | Built into UE 5.8 as an Experimental plugin |
+| Setup | Uses process-local launch flags; does not edit the `.uproject`, project INI files, or an MCP client config | Enable `ModelContextProtocol` plus Toolset plugins, restart the Editor, start the server, and configure the MCP client |
+| Execution model | Runs an arbitrary trusted Python file in a fresh namespace | Calls typed Tools registered through the Toolset Registry |
+| Instance targeting | Verifies the exact `.uproject`, PID, process creation time, executable, and in-editor project identity | Connects the MCP client to a configured local HTTP URL and port |
+| Editor lifecycle | Can attach, launch, request a confirmed normal restart, and request a normal close | Operates after the Editor and its MCP server have started |
+| Failure boundary | Reports `outcome_unknown` after an ambiguous dispatched command and does not retry it automatically | Returns standard MCP Tool results over Streamable HTTP |
+| Extending behavior | Pass a Python script and typed JSON variables without registering a new interface | Add or enable a Python/C++ Toolset, then refresh or restart when required |
+
+Choose this project when you need exact-instance safety, controlled Editor startup,
+older-engine support, or fast project-specific scripting without adding permanent
+project configuration. Choose Unreal MCP when the project is already on UE 5.8 and
+benefits more from standard MCP clients, discoverable schemas, reusable Toolsets,
+and the engine's built-in game-thread dispatch. The official setup and current
+limitations are documented in the
+[UE 5.8 guide](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor).
+
 ## Install with one prompt
 
 Send this to Codex:
@@ -26,7 +58,7 @@ installer contract, prerequisites, and manual fallback.
 SKILL.md policy and CLI examples
   -> Python lifecycle, exact-process identity, sessions, and leases
   -> Python/native JSON bridge
-  -> independent Rust discovery and command transport
+  -> Rust discovery and command transport
   -> Unreal Python Remote Execution
   -> isolated Python execution inside the verified Editor
 ```
