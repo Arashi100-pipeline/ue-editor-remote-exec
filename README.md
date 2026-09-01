@@ -22,17 +22,28 @@ Python API immediately.
 | Area | UE Editor Remote Exec | Unreal MCP in UE 5.8 |
 |---|---|---|
 | Engine coverage | Tested with UE 5.3 and 5.7; the same workflow can be integration-tested for other UE4/UE5 releases | Built into UE 5.8 as an Experimental plugin |
-| Setup | Uses process-local launch flags; does not edit the `.uproject`, project INI files, or an MCP client config | Enable `ModelContextProtocol` plus Toolset plugins, restart the Editor, start the server, and configure the MCP client |
+| Setup | Installs no additional project plugin; enables Unreal's bundled Python plugin and Remote Execution with process-local flags, leaving the `.uproject`, project INI files, and MCP client config unchanged | Enable `ModelContextProtocol` plus Toolset plugins, restart the Editor, start the server, and configure the MCP client |
 | Execution model | Runs an arbitrary trusted Python file in a fresh namespace | Calls typed Tools registered through the Toolset Registry |
+| Trusted workflow batching | One Python file can perform an entire known workflow in one Remote Execution command; an ordered multi-file plan can also reuse one verified connection | A typical workflow makes one MCP request/response per Tool call; equivalent batching requires a higher-level Tool that groups the operations |
 | Instance targeting | Verifies the exact `.uproject`, PID, process creation time, executable, and in-editor project identity | Connects the MCP client to a configured local HTTP URL and port |
 | Editor lifecycle | Can attach, launch, request a confirmed normal restart, and request a normal close | Operates after the Editor and its MCP server have started |
 | Failure boundary | Reports `outcome_unknown` after an ambiguous dispatched command and does not retry it automatically | Returns standard MCP Tool results over Streamable HTTP |
 | Extending behavior | Pass a Python script and typed JSON variables without registering a new interface | Add or enable a Python/C++ Toolset, then refresh or restart when required |
 
+For a stable, trusted workflow with many small steps, bundling those steps into one
+Python script can remove repeated Tool discovery, JSON-RPC calls, and agent decision
+round trips. This can reduce coordination latency and the window for a partially
+completed workflow. It is not a blanket claim that every Unreal operation runs
+faster: loopback HTTP overhead is small, expensive Editor work still dominates, and
+a purpose-built high-level MCP Tool can batch the same work. The advantage is that
+this project can perform that batching immediately, without first defining and
+registering a Tool interface.
+
 Choose this project when you need exact-instance safety, controlled Editor startup,
-older-engine support, or fast project-specific scripting without adding permanent
-project configuration. Choose Unreal MCP when the project is already on UE 5.8 and
-benefits more from standard MCP clients, discoverable schemas, reusable Toolsets,
+older-engine support, or fast project-specific and trusted multi-step scripting
+without adding permanent project configuration. Choose Unreal MCP when the project
+is already on UE 5.8 and benefits more from standard MCP clients, discoverable
+schemas, reusable Toolsets,
 and the engine's built-in game-thread dispatch. The official setup and current
 limitations are documented in the
 [UE 5.8 guide](https://dev.epicgames.com/documentation/unreal-engine/unreal-mcp-in-unreal-editor).
