@@ -1,9 +1,5 @@
 UE Editor Remote Exec
 Copyright 2026 UE Editor Remote Exec contributors
 
-This product includes independently implemented interoperability code for Unreal
-Python Remote Execution. It is not affiliated with or endorsed by Epic Games, Inc.
-Unreal and Unreal Engine are trademarks or registered trademarks of Epic Games, Inc.
-
 Third-party dependency notices are documented in THIRD_PARTY_NOTICES.md and the
 generated THIRD_PARTY_LICENSES.html file distributed with release artifacts.

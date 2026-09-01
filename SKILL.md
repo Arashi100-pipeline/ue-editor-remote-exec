@@ -15,8 +15,7 @@ ensure -> inject or run-plan -> inject ... -> close only when requested
 project with process-local Remote flags when it is closed. One request may use
 `run-plan` to reuse a verified channel across ordered steps. Every submitted script
 still runs in a fresh Python namespace. Discovery and command transport use the
-independent Rust client in `native/ue-remote-client`; do not restore or vendor Epic's
-Python Remote Execution implementation.
+bundled Rust client in `native/ue-remote-client`.
 
 ## Installation and first run
 

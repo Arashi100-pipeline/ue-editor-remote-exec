@@ -1,13 +1,9 @@
 # UE Editor Remote Exec
 
 Local-only automation for one exact Unreal Editor project. A Python lifecycle
-coordinator finds or launches the Editor, while an independent Rust client performs
+coordinator finds or launches the Editor, while a Rust client performs
 Remote Execution discovery, verifies the in-editor PID and project directory, and
 executes isolated Python scripts.
-
-The project does not include Unreal Engine or Epic Games source code. It is not
-affiliated with or endorsed by Epic Games. Unreal and Unreal Engine are trademarks
-or registered trademarks of Epic Games, Inc.
 
 ## Install with one prompt
 
@@ -35,8 +31,9 @@ SKILL.md policy and CLI examples
   -> isolated Python execution inside the verified Editor
 ```
 
-The Codex skill is the policy and usage layer. It is not coupled to DCC-MCP or to a
-particular game project. See `PROTOCOL.md` for the minimum interoperability sequence.
+The Codex skill is the policy and usage layer, while the lifecycle and transport
+components handle project discovery, verification, and execution. See `PROTOCOL.md`
+for the minimum interoperability sequence.
 
 ## Safety properties
 

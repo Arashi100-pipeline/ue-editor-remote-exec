@@ -1,13 +1,8 @@
 # Protocol interoperability notes
 
-This client implements the minimum wire behavior needed to interoperate with Unreal
-Python Remote Execution. The Rust source is an independent implementation; it does
-not embed, import, translate, or distribute Epic Games source code. Message names,
-field names, endpoint defaults, and observable request/response behavior are treated
-as interoperability facts and are isolated in `native/ue-remote-client/src/protocol.rs`.
-
-This statement is a technical provenance note, not legal advice. A publisher should
-still run its own legal and trademark review before a public release.
+This client implements the minimum wire behavior needed for Unreal Python Remote
+Execution. Message names, field names, endpoint defaults, and request/response
+behavior are isolated in `native/ue-remote-client/src/protocol.rs`.
 
 ## Transport sequence
 

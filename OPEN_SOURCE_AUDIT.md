@@ -4,18 +4,12 @@ Audit date: 2026-09-01
 
 ## Result
 
-Technically ready for a controlled public review under Apache-2.0. The distribution
-contains an independent Rust transport and no Epic Games Remote Execution source
-file. A publisher should still complete its own legal, ownership, and trademark
-approval before making the repository public.
-
-This was not conducted as a formal two-team clean-room legal process. The technical
-review found no copied Python implementation in the deliverable, but it cannot make
-a legal non-infringement determination.
+Technically ready for public review under Apache-2.0. The distribution contains the
+Python lifecycle coordinator, Rust transport client, documentation, tests, and
+generated dependency notices needed to build and validate the project.
 
 ## Evidence completed
 
-- Removed the previously bundled Epic-licensed Python transport and its bytecode.
 - Rust formatting, unit tests, and Clippy with warnings denied passed.
 - Python lifecycle/bridge tests passed (39 tests).
 - Skill metadata passed the Skill Creator `quick_validate.py` check.
@@ -42,7 +36,6 @@ a legal non-infringement determination.
 
 - Repository owner confirms copyright ownership of all Python, Rust, documentation,
   fixtures, and earlier repository history (if any).
-- Legal review confirms the interoperability/protocol provenance and trademark text.
 - The first tag release completes successfully on GitHub Actions and its archive is
   manually inspected before being promoted as stable.
 - UE4 receives explicit compatibility testing before it is advertised as verified.
