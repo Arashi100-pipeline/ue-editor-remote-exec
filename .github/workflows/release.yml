@@ -33,6 +33,9 @@ jobs:
       - run: cargo install cargo-about --version 0.8.4 --locked
       - run: cargo about generate scripts/licenses.hbs --locked --fail --manifest-path native/ue-remote-client/Cargo.toml --output-file THIRD_PARTY_LICENSES.html
       - run: git diff --exit-code -- THIRD_PARTY_LICENSES.html
+      - run: cargo install cargo-audit --version 0.22.1 --locked
+      - run: cargo audit
+        working-directory: native/ue-remote-client
       - shell: pwsh
         run: |
           if ("${{ github.event_name }}" -eq "workflow_dispatch") {
