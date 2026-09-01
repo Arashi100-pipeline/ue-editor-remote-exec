@@ -30,7 +30,7 @@ jobs:
       - run: cargo clippy --locked --all-targets --manifest-path native/ue-remote-client/Cargo.toml -- -D warnings
       - run: cargo test --locked --manifest-path native/ue-remote-client/Cargo.toml
       - run: uv run --locked python -m pytest -q
-      - run: cargo install cargo-about --version 0.9.2 --locked --features cli
+      - run: cargo install cargo-about --version 0.8.4 --locked --features cli
       - run: cargo about generate scripts/licenses.hbs --locked --fail --manifest-path native/ue-remote-client/Cargo.toml --output-file THIRD_PARTY_LICENSES.html
       - run: git diff --exit-code -- THIRD_PARTY_LICENSES.html
       - shell: pwsh
